@@ -20,14 +20,11 @@ router.get('/api/ships/:id', (req, res, next)=>{
         .catch(next)
 });
 router.get('/api/ships/:id/logs', (req, res, next)=>{
-    Ships.findById(req.params.id)
-        .then(ship =>{
-            Logs.find({shipId: ship._id})
-                .then(logs =>{
-                    res.send(logs)
-                })
-            })
-            .catch(next)
+    Logs.find({shipId: req.params.id})
+        .then(logs =>{
+            return res.send(logs)
+        })
+        .catch(next)
 });
 router.get('/api/ships/:shipId/logs/:id/comments', (req, res, next)=>{
     Comments.find({logId: req.params.id})
@@ -43,18 +40,11 @@ router.post('/api/ships', (req, res, next)=>{
         .catch(next)
 })
 router.put('/api/ships/:id', (req, res, next)=>{
-    Ships.findById(req.params.id)
+    Ships.findByIdAndUpdate(req.params.id, req.body)
         .then(ship =>{
-            if(ship){
-                for(var key in req.body){
-                    if(ship[key] && key != "_id"){
-                        ship[key] = req.body[key]
-                    }
-                }
-                ship.update(ship).then(()=>{return res.send(ship)})
-            }else{return res.status(400).send({error: "Change did not go through."})}
+            return res.send(ship)
         })
-        .catch(next)
+        .catch(err => res.status(400).send(err))        
 })
 router.delete('/api/ships/:id', (req, res, next)=>{
     Ships.findByIdAndRemove(req.params.id)

@@ -7,6 +7,7 @@ var schema = new Schema({
     name: {type: String, required: true},
     posted: {type: Date, required: true, default: Date.now()},
     commentBody: {type: String, required: true},
-    logId: {type: ObjectId, ref: 'Log', required: true}
+    logId: {type: ObjectId, ref: 'Log', required: true},
+    shipId: {type: ObjectId, ref: 'Ship', required: true}
 });
 module.exports = mongoose.model(schemaName, schema);

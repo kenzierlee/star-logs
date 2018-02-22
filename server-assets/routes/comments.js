@@ -25,18 +25,11 @@ router.post('/api/comments', (req, res, next)=>{
         .catch(next)
 })
 router.put('/api/comments/:id', (req, res, next)=>{
-    Comments.findById(req.params.id)
+    Comments.findByIdAndUpdate(req.params.id, req.body)
         .then(comment =>{
-            if(comment){
-                for(var key in req.body){
-                    if(comment[key] && key != "_id"){
-                        comment[key] = req.body[key]
-                    }
-                }
-                comment.update(comment).then(()=>{return res.send(comment)})
-            }else{return res.status(400).send({error: "Change did not go through."})}
+            return res.send(comment)
         })
-        .catch(next)
+        .catch(err => res.status(400).send(err))        
 })
 router.delete('/api/comments/:id', (req, res, next)=>{
     Comments.findByIdAndRemove(req.params.id)

@@ -19,14 +19,11 @@ router.get('/api/logs/:id', (req, res, next)=>{
         .catch(next)
 });
 router.get('/api/logs/:id/comments', (req, res, next)=>{
-    Logs.findById(req.params.id)
-        .then(log =>{
-            Comments.find({logId: log._id})
-                .then(comments =>{
-                    res.send(comments)
-                })
-            })
-            .catch(next)
+    Comments.find({logId: req.params.id})
+        .then(comments =>{
+            return res.send(comments)
+        })
+        .catch(next)
 });
 router.post('/api/logs', (req, res, next)=>{
     Logs.create(req.body)
@@ -36,18 +33,11 @@ router.post('/api/logs', (req, res, next)=>{
         .catch(next)
 })
 router.put('/api/logs/:id', (req, res, next)=>{
-    Logs.findById(req.params.id)
+    Logs.findByIdAndUpdate(req.params.id, req.body)
         .then(log =>{
-            if(log){
-                for(var key in req.body){
-                    if(log[key] && key != "_id"){
-                        log[key] = req.body[key]
-                    }
-                }
-                log.update(log).then(()=>{return res.send(log)})
-            }else{return res.status(400).send({error: "Change did not go through."})}
+            return res.send(log)
         })
-        .catch(next)
+        .catch(err => res.status(400).send(err))        
 })
 router.delete('/api/logs/:id', (req, res, next)=>{
     Logs.findByIdAndRemove(req.params.id)
